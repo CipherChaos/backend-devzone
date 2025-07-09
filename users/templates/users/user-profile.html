@@ -1,0 +1,117 @@
+{% extends "projects/home.html" %}
+{% load tags_filter %}
+{% block content %}
+
+   <!-- Main Section -->
+<main class="profile my-md">
+    <div class="container">
+      <div class="layout">
+        <div class="column column--1of3">
+          <div class="card text-center">
+
+            <div class="card__body dev">
+              <img class="avatar avatar--xl" src="{{ profile.profile_image.url }}" />
+              <h2 class="dev__name">{{profile.name}}</h2>
+              <p class="dev__title">{{profile.headline|empty_headline}}</p>
+              <p class="dev__location">{{profile.location|empty_location}}</p>
+
+              <ul class="dev__social social-icons">
+                {% if profile.social_github %}
+                <li>
+                  <a title="Github" href="{{profile.social_github}}" target="_blank"><span class="im im-github">{{show_if_exists}}</span></a>
+                </li>
+                {% endif %}
+                {% if profile.social_linkedin %}
+                <li>
+                  <a title="LinkedIn" href="{{profile.social_linkedin}}" target="_blank"><span class="im im-linkedin"></span></a>
+                </li>
+                {% endif %}
+                {% if profile.social_x %}
+                <li>
+                  <a title="X (former twitter)" href="{{profile.social_x}}" target="_blank"><span class="im im-x"></span></a>
+                </li>
+                {% endif %}
+                {% if profile.social_telegram %}
+                <li>
+                  <a title="Telegram" href="{{profile.social_telegram}}" target="_blank"><span class="im im-telegram"></span></a>
+                </li>
+                {% endif %}
+                {% if profile.social_website %}
+                <li>
+                  <a title="Personal Website" href="{{profile.social_website}}" target="_blank"><span class="im im-website"></span></a>
+                </li>
+                {% endif %}
+                {% if profile.social_youtube %}
+                <li>
+                  <a title="Youtube" href="{{profile.social_youtube}}" target="_blank"><span class="im im-youtube"></span></a>
+                </li>
+                {% endif %}
+              </ul>
+
+              <a href="#" class="btn btn--sub btn--lg">Send Message </a>
+            </div>
+          </div>
+        </div>
+        <div class="column column--2of3">
+          <div class="devInfo">
+            <h3 class="devInfo__title">About Me</h3>
+            <p class="devInfo__about">
+             {{profile.bio|empty_bio}}
+            </p>
+          </div>
+          <div class="devInfo">
+            <h3 class="devInfo__title">Skills</h3>
+            <div class="devInfo__skills">
+
+              {% for skill in top_skills %}
+              <div class="devSkill">
+                <h4 class="devSkill__title">{{skill.name|empty_skill}}</h4>
+                <p class="devSkill__info">{{skill.description|empty_skill_description}}</p>
+              </div>
+              {% endfor %}
+
+              <h3 class="devInfo__subtitle">Other Skills</h3>
+              <div class="devInfo__otherSkills">
+                {% for skill in other_skills %}
+                <span class="tag tag--pill tag--sub tag--lg">
+                  <small>{{skill.name|empty_skill}}</small>
+                </span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="devInfo">
+            <h3 class="devInfo__title">Projects</h3>
+            <div class="grid grid--two">
+              {% for project in profile.project_set.all %}
+              <div class="column">
+                <div class="card project">
+                  <a href="{% url 'single-project' project.slug|slugify %}" class="project">
+                    <img class="project__thumbnail" src="{{project.uploaded_image.url}}" alt="project thumbnail" />
+                    <div class="card__body">
+                      <h3 class="project__title">{{project.title|capfirst}}</h3>
+                      <p><a class="project__author" href="{% url 'user-profile' project.owner.slug|slugify %}">By {{project.owner|capfirst}}</a></p>
+                      <p class="project--rating">
+                        <span style="font-weight: bold;">{{project.vote_ratio}}%</span>
+                        {{project.vote_total|pluralize_votes}}
+                      </p>
+                      {% for tag in project.tags.all%}
+                      <div class="project__tags">
+                        <span class="tag tag--pill tag--main">
+                          <small>{{tag}}</small>
+                        </span>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </a>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</main>
+
+{% endblock %}

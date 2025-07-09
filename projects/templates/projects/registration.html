@@ -1,0 +1,14 @@
+{% extends "projects/home.html" %}
+
+{% block content %}
+    <h1>Registration</h1>
+    <hr>
+    {% if age >= 18 %}
+    <p>You successfully logged in!</p>
+
+    {% else %}
+    <p>Your age is not enough to log in !</p>
+
+    {% endif %}
+
+{% endblock %}
