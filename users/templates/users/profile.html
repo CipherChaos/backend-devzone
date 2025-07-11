@@ -2,10 +2,20 @@
 {% load tags_filter %}
 {% block content %}
 
-    <!-- Main Section -->
+<!-- Main Section -->
   <main class="home">
     <section class="hero-section text-center">
       <div class="container container--narrow">
+        {% if messages %}
+        {% for message in messages %}
+
+        <div class="alert alert--{{message.tags}}">
+            <p class="alert__message">{{message}}</p>
+            <button class="alert__close">⨯</button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
         <div class="hero-section__box">
           <h2>CONNECT WITH <span>DEVELOPERS</span></h2>
           <h2>FROM AROUND THE WORLD</h2>

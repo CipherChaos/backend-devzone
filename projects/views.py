@@ -1,8 +1,10 @@
+from django.conf.global_settings import LOGIN_REDIRECT_URL
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import title
+from django.contrib.auth.decorators import login_required
 
 from projects.models import Project
-from projects.form import ProjectForm
+from projects.forms import ProjectForm
 
 
 def products(request):
@@ -29,7 +31,7 @@ def home(request):
     context = {"projects": projects}
     return render(request, "projects/home.html", context)
 
-
+@login_required(login_url="login")
 def create_form(request):
     form = ProjectForm()
     if request.method == "POST":
@@ -41,7 +43,7 @@ def create_form(request):
     context = {"form": form}
     return render(request, "projects/form.html", context)
 
-
+@login_required(login_url="login")
 def update_form(request, slug):
     project = Project.objects.get(slug=slug)
     form = ProjectForm(instance=project)
@@ -54,7 +56,7 @@ def update_form(request, slug):
     context = {"form": form}
     return render(request, "projects/form.html", context)
 
-
+@login_required(login_url="login")
 def delete_form(request, slug):
     project = Project.objects.get(slug=slug)
     form = project
