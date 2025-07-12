@@ -32,7 +32,7 @@ def home(request):
     return render(request, "projects/home.html", context)
 
 @login_required(login_url="login")
-def create_form(request):
+def create_project(request):
     form = ProjectForm()
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES)
@@ -57,7 +57,7 @@ def update_form(request, slug):
     return render(request, "projects/form.html", context)
 
 @login_required(login_url="login")
-def delete_form(request, slug):
+def delete_project(request, slug):
     project = Project.objects.get(slug=slug)
     form = project
     if request.method == "POST":

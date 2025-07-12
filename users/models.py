@@ -11,7 +11,7 @@ class Profile(models.Model):
                                 blank=True)
     user_name = models.CharField(max_length=50, editable=True, unique=True,
                                  null=False, blank=False)
-    name = models.CharField(max_length=200, default=user_name,null=True, blank=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
     email = models.EmailField(max_length=200, null=True, blank=True)
     headline = models.CharField(max_length=200, null=True, blank=True)
     bio = models.TextField(max_length=200, null=True, blank=True)

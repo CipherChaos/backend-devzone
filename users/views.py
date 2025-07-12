@@ -1,10 +1,12 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import  UserCreationForm
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .models import Profile
-from users.forms import CustomUserCreationForm
+from users.forms import CustomUserCreationForm, ProfileForm
+
 
 def logout_user(request):
     logout(request)
@@ -13,7 +15,6 @@ def logout_user(request):
 
 
 def login_user(request):
-
     page = "login"
 
     if request.user.is_authenticated:
@@ -35,17 +36,16 @@ def login_user(request):
         except:
             messages.error(request, "Username does not exist !")
 
-
-    context = {"page":page}
+    context = {"page": page}
     return render(request, "users/login_register.html", context)
 
 
 def register_user(request):
     page = "register"
-    form =  CustomUserCreationForm()
+    form = CustomUserCreationForm()
 
     if request.method == "POST":
-        form =  CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
@@ -53,8 +53,9 @@ def register_user(request):
 
             messages.success(request, "User account was created!")
 
-    context = {"page": page, "form":form}
+    context = {"page": page, "form": form}
     return render(request, "users/login_register.html", context)
+
 
 def profiles(request):
     users_profiles = Profile.objects.all()
@@ -70,3 +71,27 @@ def user_profile(request, slug):
     context = {"profile": profile, "top_skills": top_skills,
                "other_skills": other_skills}
     return render(request, "users/user-profile.html", context)
+
+
+@login_required(login_url='login')
+def user_account(request):
+    profile = request.user.profile
+    skills = profile.skill_set.all()
+    projects = profile.project_set.all()
+
+    context = {"profile": profile, "skills": skills, "projects": projects}
+    return render(request, "users/account.html", context)
+
+
+@login_required(login_url='login')
+def edit_account(request):
+    profile = request.user.profile
+    form = ProfileForm(instance=profile)
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect("account")
+    context = {"form": form}
+    return render(request, "users/profile-form.html", context)
