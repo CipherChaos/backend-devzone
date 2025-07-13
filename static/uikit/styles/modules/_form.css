@@ -2,6 +2,11 @@
   display: block;
 }
 
+.form__delete{
+  text-align: center;
+}
+
+
 .form--inline {
   display: inline-block;
 }

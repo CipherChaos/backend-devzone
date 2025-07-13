@@ -71,4 +71,4 @@ def delete_project(request, slug):
         return redirect("home")
 
     context = {"object": form}
-    return render(request, "projects/delete.html", context)
+    return render(request, "delete.html", context)
