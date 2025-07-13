@@ -37,7 +37,7 @@ def login_user(request):
             messages.error(request, "Username does not exist !")
 
     context = {"page": page}
-    return render(request, "users/login_register.html", context)
+    return render(request, "users/login-register.html", context)
 
 
 def register_user(request):
@@ -52,9 +52,10 @@ def register_user(request):
             user.save()
 
             messages.success(request, "User account was created!")
+            return redirect('profiles')
 
     context = {"page": page, "form": form}
-    return render(request, "users/login_register.html", context)
+    return render(request, "users/login-register.html", context)
 
 
 def profiles(request):
@@ -89,9 +90,11 @@ def edit_account(request):
     form = ProfileForm(instance=profile)
 
     if request.method == "POST":
-        form = ProfileForm(request.POST, request.FILES, instance=user)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
+            messages.success(request, "Changes has successfully submitted!")
             return redirect("account")
+
     context = {"form": form}
     return render(request, "users/profile-form.html", context)

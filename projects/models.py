@@ -23,10 +23,12 @@ class Project(models.Model):
                           editable=False)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-
+        self.slug = slugify(self.title)
         super(Project, self).save(*args, **kwargs)
+
+        if self.slug is None:
+            self.slug = slugify(self.title)
+            self.save()
 
     def __str__(self):
         return self.title

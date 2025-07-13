@@ -28,15 +28,18 @@ class Profile(models.Model):
     social_youtube = models.CharField(max_length=200, null=True, blank=True)
 
 
-    slug = models.SlugField(default=user_name, null=True, blank=True)
+    slug = models.SlugField(default='', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True,
                           editable=False)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        self.slug = slugify(self.user_name)
+        super(Profile, self).save(*args, **kwargs)
+
+        if self.slug is None:
             self.slug = slugify(self.user_name)
-            super(Profile, self).save(*args,**kwargs)
+            self.save()
 
     def __str__(self):
         return str(self.user.username)

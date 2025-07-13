@@ -4,7 +4,7 @@
 {% if page == "register" %}
 
  <div class="auth">
-      <div class="card">
+      <div class="card container container--narrow">
         <div class="auth__header text-center">
           <a href="/">
             <img src="{% static 'images/icons/icon.svg' %}" alt="icon" />
@@ -39,7 +39,7 @@
           <a href="{% url 'login' %}">Log In</a>
         </div>
       </div>
-    </div>
+ </div>
 {% else %}
 <div class="auth">
       <div class="card">
@@ -86,7 +86,7 @@
           <a href="{% url 'register' %}">Sign Up</a>
         </div>
       </div>
-    </div>
+</div>
 {% endif %}
 
 {% endblock %}

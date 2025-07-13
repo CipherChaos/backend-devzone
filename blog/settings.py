@@ -1,10 +1,14 @@
 from pathlib import Path
 import os
-
+import dotenv
 from django.conf.global_settings import STATICFILES_DIRS, MEDIA_ROOT, \
     STATIC_ROOT
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+dotenv_file = os.path.join(BASE_DIR, ".env")
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
@@ -26,7 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'projects.apps.ProjectConfig',
-    'users.apps.UserConfig'
+    'users.apps.UserConfig',
 ]
 
 MIDDLEWARE = [

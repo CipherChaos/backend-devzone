@@ -33,19 +33,24 @@ def home(request):
 
 @login_required(login_url="login")
 def create_project(request):
+    profile = request.user.profile
     form = ProjectForm()
+
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            project = form.save(commit=False)
+            project.owner = profile
+            project.save()
             return redirect("home")
 
     context = {"form": form}
     return render(request, "projects/form.html", context)
 
 @login_required(login_url="login")
-def update_form(request, slug):
-    project = Project.objects.get(slug=slug)
+def update_project(request, slug):
+    profile = request.user.profile
+    project = profile.profile_set.get(slug=slug)
     form = ProjectForm(instance=project)
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES, instance=project)
@@ -58,7 +63,8 @@ def update_form(request, slug):
 
 @login_required(login_url="login")
 def delete_project(request, slug):
-    project = Project.objects.get(slug=slug)
+    profile = request.user.profile
+    project = profile.project_set.get(slug=slug)
     form = project
     if request.method == "POST":
         form.delete()
