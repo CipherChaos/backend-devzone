@@ -2,10 +2,9 @@ from django.conf.global_settings import LOGIN_REDIRECT_URL
 from django.shortcuts import render, redirect
 from django.template.defaultfilters import title
 from django.contrib.auth.decorators import login_required
-
-from projects.models import Project
+from projects.models import Project, Tag
 from projects.forms import ProjectForm
-
+from .utils import search_project
 
 def products(request):
     page = "products"
@@ -27,9 +26,10 @@ def single_project(request, slug):
 
 
 def home(request):
-    projects = Project.objects.all()
-    context = {"projects": projects}
+    projects, search_query = search_project(request)
+    context = {"projects": projects, 'search_query':search_query}
     return render(request, "projects/home.html", context)
+
 
 @login_required(login_url="login")
 def create_project(request):
@@ -47,6 +47,7 @@ def create_project(request):
     context = {"form": form}
     return render(request, "projects/form.html", context)
 
+
 @login_required(login_url="login")
 def update_project(request, slug):
     profile = request.user.profile
@@ -60,6 +61,7 @@ def update_project(request, slug):
 
     context = {"form": form}
     return render(request, "projects/form.html", context)
+
 
 @login_required(login_url="login")
 def delete_project(request, slug):

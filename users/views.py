@@ -4,8 +4,9 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .models import Profile
+from .models import Profile, Skill
 from users.forms import CustomUserCreationForm, ProfileForm, SkillForm
+from .utils import search_profiles
 
 
 def logout_user(request):
@@ -59,8 +60,8 @@ def register_user(request):
 
 
 def profiles(request):
-    users_profiles = Profile.objects.all()
-    context = {"profiles": users_profiles}
+    users_profiles, search_query = search_profiles(request)
+    context = {"profiles": users_profiles, "search_query": search_query}
     return render(request, "users/profile.html", context)
 
 
@@ -134,6 +135,7 @@ def update_skill(request, pk):
     context = {"form": form}
     return render(request, "users/skill-form.html", context)
 
+
 @login_required(login_url='login')
 def delete_skill(request, pk):
     profile = request.user.profile
@@ -144,6 +146,3 @@ def delete_skill(request, pk):
         return redirect("account")
     context = {"object": skill}
     return render(request, "delete.html", context)
-
-
-
