@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    "main.apps.MainConfig",
     'projects.apps.ProjectConfig',
     'users.apps.UserConfig',
 ]
@@ -50,7 +51,7 @@ MIDDLEWARE = [
 #     },
 # }
 
-ROOT_URLCONF = 'blog.urls'
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
@@ -69,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'blog.wsgi.application'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
@@ -120,7 +121,8 @@ STATIC_URL = "/static/"
 MEDIA_URL = "/images/"
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static"
+    BASE_DIR / "static",
+    BASE_DIR / "home"
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/images")

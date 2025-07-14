@@ -18,17 +18,16 @@ def registration(request):
     context = {"age": age}
     return render(request, "projects/registration.html", context)
 
-
 def single_project(request, slug):
     project = Project.objects.get(slug=slug)
     context = {"project": project}
     return render(request, "projects/single-project.html", context)
 
 
-def home(request):
+def projects(request):
     projects, search_query = search_project(request)
     context = {"projects": projects, 'search_query':search_query}
-    return render(request, "projects/home.html", context)
+    return render(request, "projects/projects.html", context)
 
 
 @login_required(login_url="login")
@@ -42,7 +41,7 @@ def create_project(request):
             project = form.save(commit=False)
             project.owner = profile
             project.save()
-            return redirect("home")
+            return redirect("projects")
 
     context = {"form": form}
     return render(request, "projects/form.html", context)
@@ -57,7 +56,7 @@ def update_project(request, slug):
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             form.save()
-            return redirect("home")
+            return redirect("projects")
 
     context = {"form": form}
     return render(request, "projects/form.html", context)
@@ -70,7 +69,7 @@ def delete_project(request, slug):
     form = project
     if request.method == "POST":
         form.delete()
-        return redirect("home")
+        return redirect("projects")
 
     context = {"object": form}
     return render(request, "delete.html", context)
