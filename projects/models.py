@@ -9,8 +9,9 @@ class Project(models.Model):
                               on_delete=models.SET_NULL)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    uploaded_image = models.ImageField(default="default.jpg", null=True,
-                                       blank=True)
+    project_image = models.ImageField(null=True, blank=True,
+                                       upload_to="projects/",
+                                       default="projects/default.jpg", )
     demo_link = models.CharField(max_length=2000, null=True, blank=True)
     source_link = models.CharField(max_length=2000, null=True, blank=True)
     tags = models.ManyToManyField("Tag", blank=True)
@@ -33,6 +34,9 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+
+    class Meta:
+        ordering = ["created"]
 
 class Review(models.Model):
     VOTED = (("Down Vote", "Down"),

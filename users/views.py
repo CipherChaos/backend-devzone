@@ -6,7 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .models import Profile, Skill
 from users.forms import CustomUserCreationForm, ProfileForm, SkillForm
-from .utils import search_profiles
+from .utils import search_profiles, profile_paginator
+
 
 
 def logout_user(request):
@@ -61,7 +62,9 @@ def register_user(request):
 
 def profiles(request):
     users_profiles, search_query = search_profiles(request)
-    context = {"profiles": users_profiles, "search_query": search_query}
+    custom_range, profiles = profile_paginator(request, users_profiles, 1)
+
+    context = {"profiles": users_profiles, "search_query": search_query," custom_range": custom_range}
     return render(request, "users/profile.html", context)
 
 
