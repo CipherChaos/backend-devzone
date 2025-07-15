@@ -9,7 +9,6 @@ from users.forms import CustomUserCreationForm, ProfileForm, SkillForm
 from .utils import search_profiles, profile_paginator
 
 
-
 def logout_user(request):
     logout(request)
     messages.info(request, "User was logged out")
@@ -62,9 +61,11 @@ def register_user(request):
 
 def profiles(request):
     users_profiles, search_query = search_profiles(request)
-    custom_range, profiles = profile_paginator(request, users_profiles, 1)
+    custom_range, users_profiles = profile_paginator(request, users_profiles,
+                                                     6)
 
-    context = {"profiles": users_profiles, "search_query": search_query," custom_range": custom_range}
+    context = {"profiles": users_profiles, "search_query": search_query,
+               "custom_range": custom_range}
     return render(request, "users/profile.html", context)
 
 
