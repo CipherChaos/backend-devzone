@@ -1,7 +1,4 @@
 from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
-
-print("Signal file is loaded:")
 from users.models import User, Profile
 
 def create_profile(sender, instance, created, **kwargs):

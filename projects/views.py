@@ -3,8 +3,9 @@ from django.shortcuts import render, redirect
 from django.template.defaultfilters import title
 from django.contrib.auth.decorators import login_required
 from .models import Project, Tag
-from .forms import ProjectForm
+from .forms import ProjectForm, ReviewForm
 from .utils import search_project, project_paginator
+from django.contrib import messages
 
 
 def projects(request):
@@ -17,7 +18,21 @@ def projects(request):
 
 def single_project(request, slug):
     project = Project.objects.get(slug=slug)
-    context = {"project": project}
+
+    form = ReviewForm()
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        review = form.save(commit=False)
+        review.project = project
+        review.owner = request.user.profile
+        form.save()
+        project.update_vote_stats()
+        messages.success(request, "Your review was successfully submitted")
+
+        return redirect("single-project", slug=project.slug)
+
+    context = {"form":form, "project": project}
     return render(request, "projects/single-project.html", context)
 
 @login_required(login_url="login")
@@ -46,7 +61,7 @@ def update_project(request, slug):
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             form.save()
-            return redirect("projects")
+            return redirect("account")
 
     context = {"form": form}
     return render(request, "projects/form.html", context)
@@ -59,7 +74,8 @@ def delete_project(request, slug):
     form = project
     if request.method == "POST":
         form.delete()
-        return redirect("projects")
+        return redirect("account")
 
     context = {"object": form}
     return render(request, "delete.html", context)
+

@@ -10,8 +10,8 @@ class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     project_image = models.ImageField(null=True, blank=True,
-                                       upload_to="projects/",
-                                       default="projects/default.jpg", )
+                                      upload_to="projects/",
+                                      default="projects/default.jpg", )
     demo_link = models.CharField(max_length=2000, null=True, blank=True)
     source_link = models.CharField(max_length=2000, null=True, blank=True)
     tags = models.ManyToManyField("Tag", blank=True)
@@ -22,6 +22,23 @@ class Project(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True,
                           editable=False)
+
+
+    def update_vote_stats(self):
+        reviews = self.review_set.all()
+        total_votes = reviews.count()
+
+        up_vote = reviews.filter(value="up").count()
+        ratio = (up_vote / total_votes) * 100
+        print(ratio)
+        self.vote_total = total_votes
+        self.vote_ratio = ratio
+
+        self.save()
+
+    def reviewers(self):
+        query_set = self.review_set.all().values_list("owner__id",flat=True)
+        return query_set
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
@@ -34,21 +51,27 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
-
     class Meta:
-        ordering = ["created"]
+        ordering = ["-vote_ratio", "-vote_total", "title"]
+
 
 class Review(models.Model):
-    VOTED = (("Down Vote", "Down"),
-             ("Up Vote", "Up"))
+    VOTED = (
+        ("up", "Up Vote"),
+        ("down", "Down Vote"),
+    )
 
-    # owner
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
     value = models.CharField(max_length=200, choices=VOTED)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
+
+    class Meta:
+        unique_together = [["owner", "project"]]
+
 
     def __str__(self):
         return self.value

@@ -12,7 +12,7 @@
 
                     {% csrf_token %}
                     <p>Are you sure to delete? {{object}}</p>
-                    <button id="btn--go_back" class="btn btn--sub btn--lg  my-md" type="submit"><a href="{{request.GET.next}}">Go Back</a></button>
+                    <a href="{{ request.GET.next }}" class="btn btn--sub btn--lg my-md">Go Back</a>
                     <input id="btn--confirm" class="btn btn--sub btn--lg  my-md" type="submit" value="confirm" />
                 </form>
             </div>
