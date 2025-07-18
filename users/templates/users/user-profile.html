@@ -1,4 +1,4 @@
-{% extends "projects/projects.html" %}
+{% extends "home.html" %}
 {% load tags_filter %}
 {% block content %}
 
@@ -45,10 +45,10 @@
                 <li>
                   <a title="Youtube" href="{{profile.social_youtube}}" target="_blank"><span class="im im-youtube"></span></a>
                 </li>
-                {% endif %}
               </ul>
-
-              <a href="#" class="btn btn--sub btn--lg">Send Message </a>
+              {% if request.user.profile.slug != profile.slug %}
+              <a href="{% url 'create-message' profile.id %}" class="btn btn--sub btn--lg">Send Message </a>
+              {% endif %}
             </div>
           </div>
         </div>

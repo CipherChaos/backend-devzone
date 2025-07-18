@@ -31,12 +31,11 @@
   <link rel="stylesheet" href="{% static 'uikit/styles/uikit.css' %}" />
   <link rel="stylesheet" href="{% static 'styles/app.css' %}" />
 
-
 </head>
-{% block content %}
-<body class="index-page">
 
+<body class="index-page">
   {% include "navbar.html" %}
+  {% block content %}
 
   <main class="main">
 
@@ -685,6 +684,7 @@
     </section><!-- /Contact Section -->
 
   </main>
+  {% endblock %}
   {% include "footer.html" %}
   <!-- Scroll Top -->
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
@@ -706,5 +706,5 @@
   <script src="{% static 'js/main.js' %}"></script>
 
 </body>
-{% endblock %}
+
 </html>

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .models import Profile, Skill
-from users.forms import CustomUserCreationForm, ProfileForm, SkillForm
+from users.forms import CustomUserCreationForm, ProfileForm, SkillForm, SendMessage
 from .utils import search_profiles, profile_paginator
 
 
@@ -31,7 +31,8 @@ def login_user(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, "You successfully logged in")
-                return redirect(request.GET['next'] if 'next' in request.GET else 'account')
+                return redirect(request.GET[
+                                    'next'] if 'next' in request.GET else 'account')
             else:
                 messages.error(request, "Username OR password is incorrect !")
         except:
@@ -150,3 +151,53 @@ def delete_skill(request, pk):
         return redirect("account")
     context = {"object": skill}
     return render(request, "delete.html", context)
+
+
+@login_required(login_url='login')
+def inbox_messages(request):
+    profile = request.user.profile
+    message_request = profile.messages.all()
+    unread_message_count = message_request.filter(is_read=False).count
+
+    context = {"message_request": message_request,
+               "unread_message_count": unread_message_count}
+    return render(request, "users/inbox.html", context)
+
+
+@login_required(login_url='login')
+def view_message(request, pk):
+    profile = request.user.profile
+    message = profile.messages.get(id=pk)
+    if message.is_read is False:
+        message.is_read = True
+        message.save()
+    context = {"message": message}
+    return render(request, "users/message.html", context)
+
+
+def create_message(request, pk):
+    recipient = Profile.objects.get(id=pk)
+    form = SendMessage()
+
+    try:
+        sender = request.user.profile
+    except:
+        sender = None
+
+    if request.method == "POST":
+        form = SendMessage(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = sender
+            message.recipient = recipient
+
+            if sender:
+                message.name = sender.name
+                message.email = sender.email
+            message.save()
+
+            messages.success(request, "your message was successfully sent")
+            return redirect("profiles")
+
+    context = {"recipient": recipient, "form":form}
+    return render(request, "users/message-form.html", context)

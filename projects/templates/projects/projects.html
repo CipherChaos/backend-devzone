@@ -1,23 +1,11 @@
-<!doctype html>
+{% extends "home.html" %}
 {% load static %}
 {% load tags_filter %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="{% static 'uikit/styles/uikit.css' %}" />
-    <link rel="stylesheet" href="{% static 'styles/app.css' %}" />
-
-    <title>DevSearch - Connect with Developers!</title>
-</head>
-
-
-{% include "navbar.html" %}
-{% block content %}
 <body>
-<!-- Main Section -->
+
+    <!-- Main Section -->
+    {% block content %}
   <main class="projects">
     <!-- search-bar section -->
     {% include "search-bar.html" %}
@@ -58,8 +46,7 @@
     {% include 'paginate.html' with queryset=projects custom_range=custom_range %}
 
   </main>
-{% endblock %}
-{% include "footer.html" %}
+    {% endblock %}
 
 </body>
 <script src="{% static '/uikit/app.js' %}"></script>
