@@ -1,8 +1,11 @@
 from pathlib import Path
 import os
 import dotenv
+from decouple import config
 from django.conf.global_settings import STATICFILES_DIRS, MEDIA_ROOT, \
-    STATIC_ROOT
+    STATIC_ROOT, EMAIL_BACKEND
+
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -112,6 +115,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+EMAIL_BACKEND = config("EMAIL_BACKEND")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT", cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 
 # Static files (CSS, JavaScript, Images)

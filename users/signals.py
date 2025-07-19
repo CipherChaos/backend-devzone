@@ -1,5 +1,11 @@
+from django.conf import settings
 from django.db.models.signals import post_save, post_delete
-from users.models import User, Profile
+from .models import Profile
+from django.contrib.auth.models import User
+
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 def create_profile(sender, instance, created, **kwargs):
 
@@ -11,7 +17,21 @@ def create_profile(sender, instance, created, **kwargs):
             email=user.email,
             name=user.first_name,
         )
-        user.save()
+
+        subject = f"Hello {[profile.name]}, Welcome to Devzone!"
+        message = "We're glad you are here!"
+
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [profile.email],
+                fail_silently=False,
+
+            )
+        except:
+            print("Email failed to send!")
 
 def update_profile(sender, instance, created, **kwargs):
 
