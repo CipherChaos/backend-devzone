@@ -1,4 +1,3 @@
-from tkinter.constants import CASCADE
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 import uuid
