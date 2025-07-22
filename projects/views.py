@@ -1,6 +1,4 @@
-from django.conf.global_settings import LOGIN_REDIRECT_URL
 from django.shortcuts import render, redirect
-from django.template.defaultfilters import title
 from django.contrib.auth.decorators import login_required
 from .models import Project, Tag
 from .forms import ProjectForm, ReviewForm
