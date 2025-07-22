@@ -83,4 +83,3 @@ def delete_project(request, slug):
 
     context = {"object": form}
     return render(request, "delete.html", context)
-

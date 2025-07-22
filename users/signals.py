@@ -8,7 +8,6 @@ from django.conf import settings
 
 
 def create_profile(sender, instance, created, **kwargs):
-
     if created:
         user = instance
         profile = Profile.objects.create(
@@ -33,8 +32,8 @@ def create_profile(sender, instance, created, **kwargs):
         except:
             print("Email failed to send!")
 
-def update_profile(sender, instance, created, **kwargs):
 
+def update_profile(sender, instance, created, **kwargs):
     profile = instance
     user = profile.user
 
@@ -46,11 +45,22 @@ def update_profile(sender, instance, created, **kwargs):
 
 
 def delete_profile(sender, instance, **kwargs):
+    try:
+        user = instance.user
+        user.delete()
+    except:
+        pass
 
-    user = instance.user
-    user.delete()
+
+def set_default_image_on_clear(sender, instance, **kwargs):
+
+    if not instance.profile_image and instance.profile_image.name != instance.DEFAULT_PROFILE_IMAGE_PATH:
+        instance.profile_image = instance.DEFAULT_PROFILE_IMAGE_PATH
+        instance.save()
+
 
 
 post_save.connect(create_profile, sender=User)
 post_save.connect(update_profile, sender=Profile)
 post_delete.connect(delete_profile, sender=Profile)
+post_save.connect(set_default_image_on_clear, sender=Profile)

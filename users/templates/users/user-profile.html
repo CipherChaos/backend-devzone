@@ -10,7 +10,7 @@
           <div class="card text-center">
 
             <div class="card__body dev">
-              <img class="avatar avatar--xl" src="{{ profile.profile_image.url }}" />
+              <img class="avatar avatar--xl" src="{{ profile.import_url }}" />
               <h2 class="dev__name">{{profile.name|title}}</h2>
               <p class="dev__title">{{profile.headline|empty_headline}}</p>
               <p class="dev__location">{{profile.location|empty_location}}</p>
@@ -45,6 +45,7 @@
                 <li>
                   <a title="Youtube" href="{{profile.social_youtube}}" target="_blank"><span class="im im-youtube"></span></a>
                 </li>
+                {% endif %}
               </ul>
               {% if request.user.profile.slug != profile.slug %}
               <a href="{% url 'create-message' profile.id %}" class="btn btn--sub btn--lg">Send Message </a>

@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 import uuid
 from django.utils.text import slugify
@@ -5,13 +6,16 @@ from users.models import Profile
 
 
 class Project(models.Model):
+
+    DEFAULT_PROJECT_IMAGE_PATH = "projects/default.jpg"
+
     owner = models.ForeignKey(Profile, null=True, blank=True,
-                              on_delete=models.SET_NULL)
+                              on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     project_image = models.ImageField(null=True, blank=True,
                                       upload_to="projects/",
-                                      default="projects/default.jpg", )
+                                      default=DEFAULT_PROJECT_IMAGE_PATH, )
     demo_link = models.CharField(max_length=2000, null=True, blank=True)
     source_link = models.CharField(max_length=2000, null=True, blank=True)
     tags = models.ManyToManyField("Tag", blank=True)
@@ -47,6 +51,21 @@ class Project(models.Model):
         if self.slug is None:
             self.slug = slugify(self.title)
             self.save()
+
+    @property
+    def import_url(self):
+        try:
+            url = self.project_image.url
+        except:
+            url = ''
+        return url
+
+    def set_image_to_default(self):
+        if self.project_image and self.project_image.name != self.DEFAULT_PROJECT_IMAGE_PATH:
+            self.project_image.delete(save=False)
+
+        self.project_image = self.DEFAULT_PROJECT_IMAGE_PATH
+        self.save()
 
     def __str__(self):
         return self.title
