@@ -15,6 +15,8 @@ urlpatterns = [
     path('', views.get_routes),
     path('projects/', views.get_projects),
     path('projects/project/<slug:slug>/', views.get_project),
-    path('projects/<slug:slug>/vote/', views.get_project_vote)
+    path('projects/<slug:slug>/vote/', views.get_project_vote),
+
+    path('remove-tag/', views.remove_tag)
 
 ]

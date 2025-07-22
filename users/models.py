@@ -92,11 +92,21 @@ class Message(models.Model):
     body = models.TextField()
 
     is_read = models.BooleanField(default=False, null=True)
+    slug = models.SlugField(default='', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.sender)
+        super(Message, self).save(*args, **kwargs)
+
+        if self.slug is None:
+            self.slug = slugify(self.sender)
+            self.save()
+
     def __str__(self):
         return self.subject
+
     class Meta:
-        ordering = ["is_read","-created"]
+        ordering = ["is_read", "-created"]

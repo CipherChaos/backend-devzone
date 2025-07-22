@@ -2,7 +2,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .serializers import ProjectSerializer
-from projects.models import Project, Review
+from projects.models import Project, Review, Tag
+
 
 @api_view(['GET'])
 def get_routes(request):
@@ -17,17 +18,20 @@ def get_routes(request):
 
     return Response(routes)
 
+
 @api_view(['GET'])
 def get_projects(request):
     projects = Project.objects.all()
     serializers = ProjectSerializer(projects, many=True)
     return Response(serializers.data)
 
+
 @api_view(['GET'])
-def get_project(request,slug):
+def get_project(request, slug):
     project = Project.objects.get(slug=slug)
     serializers = ProjectSerializer(project, many=False)
     return Response(serializers.data)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -37,14 +41,26 @@ def get_project_vote(request, slug):
     data = request.data
 
     review, created = Review.objects.get_or_create(
-        owner = user,
-        project = project,
+        owner=user,
+        project=project,
     )
 
     review.value = data["value"]
     review.save()
     project.update_vote_stats()
 
-
     serializer = ProjectSerializer(project, many=False)
     return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+def remove_tag(request):
+    tag_slug = request.data['tag']
+    project_slug = request.data['project']
+
+    project = Project.objects.get(slug=project_slug)
+    tag = Tag.objects.get(id=tag_slug)
+
+    project.tags.remove(tag)
+
+    return Response("Tag was deleted!")

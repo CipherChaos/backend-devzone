@@ -18,6 +18,11 @@
                         {{field}}
                     </div>
                     {% endfor %}
+                    <div class="form__field">
+                        {% for tag in project.tags.all %}
+                            <div class="project-tag tag tag--pill tag--main" data-tag="{{tag.id}}" data-project="{{project.slug|slugify}}">{{tag.name}} &#215;</div>
+                        {% endfor %}
+                    </div>
 
                     <div class="form__field">
                          <label for="formInput#text"> Tags </label>
