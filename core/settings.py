@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import dotenv
+import environ
 from decouple import config
 from django.conf.global_settings import STATICFILES_DIRS, MEDIA_ROOT, \
     STATIC_ROOT, EMAIL_BACKEND
@@ -15,10 +16,15 @@ if os.path.isfile(dotenv_file):
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+env = environ.Env(
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+DEBUG = env('DEBUG')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # Application definition
 
@@ -52,7 +58,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
@@ -94,7 +99,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-
 # STORAGES = {
 #     "staticfiles": {
 #         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -122,12 +126,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+dotenv.load_dotenv()
+
 # Database
+
+DATABASE_NAME = os.environ.get('DATABASE_NAME')
+DATABASE_USER = os.environ.get('DATABASE_USER')
+DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
+DATABASE_HOST = os.environ.get('DATABASE_HOST', 'localhost')
+DATABASE_PORT = os.environ.get('DATABASE_PORT', '5431')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT
+
     }
 }
 
