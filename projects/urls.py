@@ -11,3 +11,4 @@ urlpatterns = [
     path('delete-project/<slug:slug>/', views.delete_project,
          name="delete-project")
 ]
+

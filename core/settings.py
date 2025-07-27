@@ -16,14 +16,11 @@ if os.path.isfile(dotenv_file):
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-env = environ.Env(
-
-    DEBUG=(bool, False)
-)
+env = environ.Env()
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-DEBUG = env('DEBUG')
+DEBUG = env.bool('DEBUG',default=False)
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # Application definition
