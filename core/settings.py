@@ -14,14 +14,14 @@ dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 env = environ.Env()
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 DEBUG = env.bool('DEBUG',default=False)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 
 # Application definition
 
@@ -128,10 +128,10 @@ dotenv.load_dotenv()
 # Database
 
 DATABASE_NAME = os.environ.get('DATABASE_NAME')
-DATABASE_USER = os.environ.get('DATABASE_USER')
+DATABASE_USER = os.environ.get('DATABASE_USERNAME')
 DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
-DATABASE_HOST = os.environ.get('DATABASE_HOST', 'localhost')
-DATABASE_PORT = os.environ.get('DATABASE_PORT', '5431')
+DATABASE_HOST = os.environ.get('DATABASE_HOST', 'db')
+DATABASE_PORT = os.environ.get('DATABASE_PORT', '5432')
 
 DATABASES = {
     'default': {
